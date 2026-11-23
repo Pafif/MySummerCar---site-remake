@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Summer Car Design Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one reading column of issue rows, each pairing what the Figma does with what the build does */
+  :root {
+    --bg: #1f1a10; --panel: #2c2416; --line: #4a3d24;
+    --fg: #f3ecd8; --muted: #c2b694; --msc: #ffee00; --red: #e0654f; --green: #7bd65a;
+    --display: 'Dosis', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+    color-scheme: dark;
+  }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 500 1.0625rem/1.55 var(--display); }
+  .wrap { max-width: 920px; margin: 0 auto; padding-block: 2.5rem 5rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1 { font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; margin: 0 0 .5rem; color: var(--msc); text-wrap: balance; }
+  .lede { color: var(--muted); max-width: 62ch; margin: 0 0 2rem; }
+  h2 { font-weight: 800; font-size: 1.5rem; margin: 2.5rem 0 .75rem; text-wrap: balance; }
+  .issue { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: .75rem; overflow: hidden; margin-bottom: 1rem; }
+  .issue > div { background: var(--panel); padding: .9rem 1.1rem; min-width: 0; }
+  .issue h3 { grid-column: 1 / -1; margin: 0; padding: .7rem 1.1rem; background: var(--panel); font-size: 1.1rem; font-weight: 800; }
+  .tag { display: block; font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .25rem; }
+  .bad .tag { color: var(--red); } .good .tag { color: var(--green); }
+  .issue p { margin: 0; }
+  code { font-size: .9em; color: var(--msc); }
+  .sev { float: right; font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: .1rem .5rem; border-radius: 999px; border: 1px solid currentColor; }
+  .sev.high { color: var(--red); } .sev.med { color: var(--msc); } .sev.low { color: var(--muted); }
+  .shots { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1px; background: var(--line); }
+  .shots figure { margin: 0; background: #17120a; padding: .75rem; display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+  .shots img { width: 100%; height: auto; max-height: 360px; object-fit: contain; border-radius: .4rem; }
+  .shots .gif { display: flex; gap: 1rem; align-items: center; justify-content: center; min-height: 120px; }
+  .shots .gif img { width: 114px; max-height: none; image-rendering: pixelated; }
+  .shots figcaption { font-size: .8rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .shots .bad figcaption { color: var(--red); } .shots .good figcaption { color: var(--green); }
+  .new { font-size: .7rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #000; background: var(--msc); padding: .1rem .45rem; border-radius: 999px; vertical-align: .15em; margin-left: .35rem; }
+  .updated { color: var(--muted); font-size: .95rem; margin: -1.25rem 0 2rem; }
+  @media (max-width: 600px) { .issue, .shots { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Design review: My Summer Car</h1>
+  <p class="lede">Issues found while rebuilding the Figma frame “My summer car” (1366 × 3517) in Bootstrap 5. Each row shows what the design does and how the improved build handles it. The retro “HOT!” and under-construction look is treated as intentional and kept.</p>
+  <p class="updated">Updated 28 October 2026: five new issues, marked <span class="new">New</span>, with before/after screenshots.</p>
+
+  <h2>Layout</h2>
+  <div class="issue"><h3>Car image cut off at the left edge <span class="sev high">High</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p><code>Firefly 1</code> sits at x = −216, so a third of the car is outside the page.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Moved into a sticker row inside the container, shown whole.</p></div></div>
+  <div class="issue"><h3>Features panel much taller than its content <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>The red panel is stretched to match the Images panel, leaving a large empty block under “PC-only game”.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Features is its own full-width section; content sets the height.</p></div></div>
+  <div class="issue"><h3>No grid: random image sizes and gaps <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>Gallery tiles range from 225 to 426 px wide with uneven gutters; feature shots from 140 to 292 px. The logo tile is narrower than its row.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Features sit in equal 16:9 cards. The gallery uses one big shot plus a fixed pattern, so every row is full at every screen size.</p></div></div>
+  <div class="issue"><h3>Fixed 1366 px width <span class="sev high">High</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>Only a desktop frame exists; everything is absolutely positioned.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Responsive from phone to desktop, collapsing nav on small screens.</p></div></div>
+  <div class="issue"><h3>Scrollbar drawn into the design <span class="sev low">Low</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>A macOS scrollbar component and a page-control component are placed on the canvas at the top right.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Removed; the browser draws its own.</p></div></div>
+  <div class="issue"><h3>Light grey gallery panel <span class="new">New</span> <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>The Images panel is <code>#dddbdb</code>, the only light surface on a dark, saturated page. It pulls the eye away from the screenshots, and the yellow frames barely stand out against it. The white logo tile adds even more glare.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Red panel like Features, so the yellow frames read clearly. The logo tile is gone (the logo is already in the header), leaving 7 real screenshots in a layout with no gaps.</p></div>
+    <div class="shots"><figure class="bad"><figcaption>Figma</figcaption><img src="assets/review/gallery-before.jpg" alt="Figma gallery on a light grey panel with a white logo tile" loading="lazy"></figure><figure class="good"><figcaption>Build</figcaption><img src="assets/review/gallery-after.jpg" alt="Rebuilt gallery on a red panel with one large screenshot" loading="lazy"></figure></div></div>
+  <div class="issue"><h3>Video box breaks the page edges <span class="new">New</span> <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>The video sits at x = 43 and is 1280 px wide, while every panel above starts at x = 65, so it sticks out on the left and right. Before it plays it's a plain black box with no picture or title.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Aligned to the same container as the other sections, with a cover image, a title bar and a play button. YouTube's player only loads when someone presses play.</p></div>
+    <div class="shots"><figure class="bad"><figcaption>Figma</figcaption><img src="assets/review/video-before.jpg" alt="A large black video box wider than the panels above it" loading="lazy"></figure><figure class="good"><figcaption>Build</figcaption><img src="assets/review/video-after.jpg" alt="Trailer cover with a picture and a play button bar" loading="lazy"></figure></div></div>
+
+  <h2>Readability</h2>
+  <div class="issue"><h3>Blue text on dark red <span class="sev high">High</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>The developer quote is <code>#0037ff</code> on <code>#9b382e</code>, a contrast ratio of 1.0:1, so the two colours have the same brightness (WCAG asks for 4.5:1).</p></div>
+    <div class="good"><span class="tag">Build</span><p>White italic text in a dashed yellow callout.</p></div></div>
+  <div class="issue"><h3>Images laid over the text <span class="sev high">High</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>“HOT!” badges sit on top of runs of spaces typed into the paragraph, so the text has holes and breaks at any other width. The skull and a black rectangle are stacked on the permadeath image.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Badges are inline images in the sentence; the permadeath image is used once on its own.</p></div></div>
+  <div class="issue"><h3>Small, multicolour body copy <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>16 px ExtraBold in a 651 px box, switching between white, yellow and blue.</p></div>
+    <div class="good"><span class="tag">Build</span><p>18 px with 1.55 line height; yellow kept only for the highlighted sentence.</p></div></div>
+  <div class="issue"><h3>Centred news list with low contrast <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>Yellow text centred on olive green; dates are buried at the start of long centred lines.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Dark panel, left-aligned list with a fixed date column.</p></div></div>
+  <div class="issue"><h3>“So have fun with::::::::” leads nowhere <span class="sev low">Low</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>The sentence ends in colons with nothing after it.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Turned into a link that jumps to Features.</p></div></div>
+
+  <h2>Interaction</h2>
+  <div class="issue"><h3>Arrows that look clickable but do nothing <span class="new">New</span> <span class="sev high">High</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>Every feature starts with an arrow in a circle, which reads as a button. Visitors click it and nothing happens. There's also a doubled arrow at “Dead boring highway”.</p></div>
+    <div class="good"><span class="tag">Build</span><p>The arrow now keeps its promise: clicking a card flips it over to show a short description. It works with the keyboard too.</p></div>
+    <div class="shots"><figure class="bad"><figcaption>Figma</figcaption><img src="assets/review/features-before.jpg" alt="Feature list with arrow icons and a doubled arrow" loading="lazy"></figure><figure class="good"><figcaption>Build</figcaption><img src="assets/review/features-after.jpg" alt="A feature card next to a flipped card showing its description" loading="lazy"></figure></div></div>
+
+  <h2>Consistency and handoff</h2>
+  <div class="issue"><h3>Animated GIFs not marked in the handoff <span class="new">New</span> <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>Six images are animated GIFs (the rooster, the “HOT!” badges, the skull, the smiley, the fire and the construction strip), but nothing in the file says so. Figma's export hands developers a single still frame, so the animation is silently lost.</p></div>
+    <div class="good"><span class="tag">Build</span><p>The original GIFs were pulled from the prototype instead. In future, name animated layers (for example <code>rooster.gif</code>) or add a note so they're exported as files.</p></div>
+    <div class="shots"><figure class="bad"><figcaption>What the export gives</figcaption><div class="gif"><img src="assets/review/rooster-still.png" alt="A single still frame of the rooster"></div></figure><figure class="good"><figcaption>What the design meant</figcaption><div class="gif"><img src="assets/rooster.gif" alt="The animated exploding rooster"></div></figure></div></div>
+  <div class="issue"><h3>Hand-placed, duplicated and hidden icons <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>14 arrow instances placed one by one: one duplicate (y = 558 and 582) and four hidden behind other layers (y = 1620–2021). Feature text is spaced with empty lines.</p></div>
+    <div class="good"><span class="tag">Build</span><p>One arrow per feature card, generated by the markup.</p></div></div>
+  <div class="issue"><h3>Mismatched social logos <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>Steam (round), YouTube (wordmark), Facebook (square) and X are four different styles and sizes, from 107 to 279 px wide.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Four identical yellow circle buttons with matching icons and labels for screen readers.</p></div></div>
+  <div class="issue"><h3>Navigation doesn’t match the sections <span class="sev med">Med</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>Nav offers Multimedia / News / Follow as unlinked buttons with uneven widths; About and Features have no link.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Sticky nav linking every section, with the current section highlighted.</p></div></div>
+  <div class="issue"><h3>Unnamed layers <span class="sev low">Low</span></h3>
+    <div class="bad"><span class="tag">Figma</span><p>Layers are “image 1” to “image 21”, “Rectangle 4”, “Group 6”.</p></div>
+    <div class="good"><span class="tag">Build</span><p>Assets renamed by content (<code>feat-sauna.jpg</code>, <code>gallery-3.jpg</code>); alt text added.</p></div></div>
+</div>
+</body>
+</html>

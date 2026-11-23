@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Summer Car</title>
+<meta name="description" content="My Summer Car: a game about car building and everlasting Finnish summer.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="apple-touch-icon" href="assets/logo.png">
+<meta name="theme-color" content="#422c13">
+<!-- Link preview (Discord, Messenger, X...). When the site is online, change og:image and og:url
+     to full addresses, e.g. https://your-site.example/assets/og-image.jpg, or previews won't show the image. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="My Summer Car">
+<meta property="og:description" content="A game about car building and everlasting Finnish summer. Small error and you die.">
+<meta property="og:image" content="assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Dosis'; src: url('assets/fonts/dosis.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }
+  :root {
+    --msc: #ffee00;
+    --msc-green: #2ec400;
+    --header: #422c13;
+    --panel-red: #9b382e;
+    --panel-red-dark: #7a2a22;
+    --panel-grey: #dddbdb;
+    --ink: #141008;
+    --radius: 2rem;
+    --bs-font-sans-serif: 'Dosis', 'Arial Narrow', 'Roboto Condensed', 'DejaVu Sans Condensed', sans-serif;
+  }
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+  /* ---------- custom scrollbar ---------- */
+  /* Chrome, Edge, Safari, Opera */
+  ::-webkit-scrollbar { width: 16px; height: 16px; }
+  ::-webkit-scrollbar-track { background: var(--header); border-left: 3px solid #000; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--msc);
+    border: 3px solid #000;
+    border-radius: 8px;
+    box-shadow: inset -3px -3px 0 rgba(0, 0, 0, .25);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #fff; }
+  ::-webkit-scrollbar-thumb:active { background: var(--msc-green); }
+  ::-webkit-scrollbar-corner { background: var(--header); }
+  /* Firefox (it doesn't support the rules above) */
+  @supports not selector(::-webkit-scrollbar) {
+    html { scrollbar-color: var(--msc) var(--header); scrollbar-width: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    font-family: var(--bs-font-sans-serif);
+    font-size: 1.125rem;
+    color: #fff;
+    background-color: #1c4d1f;
+    background-image: radial-gradient(ellipse 160% 120% at 0 0,
+      #efc766 0%, #baa954 22%, #868a43 44%, #516c31 66%, #365c28 80%, #1c4d1f 92%);
+    min-height: 100vh;
+  }
+
+
+  h1, h2, h3, h4 { color: inherit; }
+  .container-xl { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .site-nav.sticky-top { top: env(safe-area-inset-top, 0px); }
+  .ico { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; flex-shrink: 0; }
+
+  /* ---------- header ---------- */
+  .site-nav { background: var(--header); border-bottom: 3px solid #000; }
+  .site-nav .navbar-brand { display: flex; align-items: center; gap: .75rem; font-weight: 600; font-size: 1.5rem; color: var(--msc); white-space: normal; line-height: 1.1; }
+  .site-nav .navbar-brand img { height: 62px; width: auto; }
+  .site-nav .navbar-brand strong { color: var(--msc-green); font-weight: 800; }
+  .site-nav .nav-link { color: var(--msc); font-weight: 500; font-size: 1.35rem; padding-inline: .9rem !important; }
+  .site-nav .nav-link:hover, .site-nav .nav-link:focus-visible { color: #fff; }
+  .site-nav .nav-link.active { color: #fff; text-decoration: underline; text-decoration-color: var(--msc); text-underline-offset: 6px; text-decoration-thickness: 3px; }
+  .site-nav .navbar-toggler { border-color: var(--msc); }
+  .site-nav .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ffee00' stroke-linecap='round' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+
+  /* ---------- shared ---------- */
+  section { padding-block: 2.5rem; }
+  .section-title {
+    font-weight: 800; font-size: clamp(2.25rem, 4vw, 3rem); line-height: 1;
+    color: #fff; text-shadow: 3px 3px 0 #000; margin-bottom: 1.25rem;
+  }
+  .section-title.yellow { color: var(--msc); }
+  .panel { border: 3px solid #000; border-radius: var(--radius); padding: clamp(1.25rem, 3vw, 2rem); box-shadow: 6px 6px 0 rgba(0,0,0,.35); }
+  .panel-red  { background: var(--panel-red); }
+  .panel-grey { background: var(--panel-grey); color: var(--ink); }
+  .panel-dark { background: rgba(20, 16, 8, .78); }
+  .y { color: var(--msc); }
+  a { color: var(--msc); }
+  a:hover { color: #fff; }
+  :focus-visible { outline: 3px solid var(--msc); outline-offset: 3px; }
+
+  /* ---------- about ---------- */
+  .about p { font-weight: 700; line-height: 1.55; max-width: 65ch; }
+  .hot { height: 1.15em; width: auto; vertical-align: -0.15em; margin-inline: .15em; }
+  .rooster { height: 3em; width: auto; vertical-align: middle; margin-left: .35em; }
+  .dev-quote {
+    border: 3px dashed var(--msc); border-radius: 1rem; padding: 1rem 1.25rem;
+    background: var(--panel-red-dark); font-weight: 600; font-style: italic;
+  }
+  .dev-quote img { max-width: 100%; height: auto; display: block; margin-top: .75rem; }
+  .permadeath-wrap { position: relative; }
+  .permadeath { width: 100%; height: auto; border: 3px solid #000; border-radius: .75rem; display: block; }
+  .permadeath-wrap .skull { position: absolute; left: 4%; bottom: 8%; width: 26%; height: auto; }
+  .have-fun {
+    display: inline-flex; align-items: center; gap: .5rem; font-weight: 800; font-size: 1.25rem;
+    color: var(--msc); text-decoration: none; border-bottom: 3px dotted var(--msc);
+  }
+  .have-fun:hover { color: #fff; border-color: #fff; }
+
+  .sticker-row img {
+    width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: contain;
+    filter: drop-shadow(4px 4px 0 rgba(0,0,0,.4));
+  }
+  .sticker-row .boxed { object-fit: cover; border: 3px solid #000; border-radius: .75rem; }
+
+  /* ---------- features ---------- */
+  .feature-card { background: var(--panel-red-dark); border: 3px solid #000; border-radius: 1.25rem; overflow: hidden; height: 100%; }
+  .feature-card .ratio img { object-fit: cover; width: 100%; height: 100%; }
+  .feature-card .body { display: flex; gap: .6rem; align-items: flex-start; padding: .85rem 1rem 1rem; font-weight: 600; line-height: 1.3; }
+  @media (max-width: 575.98px) { .feature-card .body { padding: .6rem .65rem .75rem; font-size: .95rem; gap: .4rem; } }
+  .feature-card .ico { color: var(--msc); font-size: 1.4rem; line-height: 1; flex-shrink: 0; }
+  /* Flip cards: click a feature to turn it over and read more */
+  .flip { all: unset; display: block; height: 100%; width: 100%; cursor: pointer; perspective: 1200px; border-radius: 1.25rem; }
+  .flip-inner { display: grid; height: 100%; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .3, 1); }
+  .flip-face { grid-area: 1 / 1; display: flex; flex-direction: column; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .flip-back { transform: rotateY(180deg); background: #1b140a; padding: 1rem 1.1rem; gap: .5rem; }
+  .flip-title { font-weight: 800; color: var(--msc); line-height: 1.2; }
+  .flip-text { font-weight: 500; line-height: 1.45; font-size: 1rem; }
+  .flip-hint { margin-top: auto; display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; font-weight: 700; color: var(--msc); opacity: .85; }
+  .flip[aria-pressed="true"] .flip-inner { transform: rotateY(180deg); }
+  .flip .feature-card { transition: box-shadow .15s ease; }
+  .flip:hover .feature-card, .flip:focus-visible .feature-card { box-shadow: 5px 5px 0 #000; }
+  .flip:hover .flip-face:not(.flip-back) .ico { transform: translateX(3px); }
+  .flip .ico { transition: transform .15s ease; }
+  .flip:focus-visible { outline: 3px solid var(--msc); outline-offset: 3px; }
+  @media (max-width: 575.98px) { .flip-back { padding: .7rem .75rem; } .flip-text { font-size: .9rem; line-height: 1.35; } }
+  @media (prefers-reduced-motion: reduce) { .flip-inner, .flip .ico { transition: none; } }
+  .feature-extra { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .feature-extra span {
+    display: inline-flex; align-items: center; gap: .5rem; padding: .5rem 1rem;
+    background: var(--panel-red-dark); border: 3px solid #000; border-radius: 999px; font-weight: 600;
+  }
+  .feature-extra .ico { color: var(--msc); }
+  .hero-car { width: 100%; height: auto; border: 3px solid #000; border-radius: 1.25rem; }
+
+  /* ---------- gallery ---------- */
+  /* Gallery: 7 screenshots. Phone: big first shot, then pairs. From 768px: big shot on the left
+     with four small ones beside it, and the last two wide underneath, so every row is full. */
+  .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+  .gallery-item:first-child { grid-column: span 2; }
+  @media (min-width: 768px) {
+    .gallery { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+    .gallery-item:first-child { grid-row: span 2; }
+    .gallery-item:first-child button, .gallery-item:first-child .frame { height: 100%; }
+    .gallery-item:first-child .ratio::before { padding-top: 0; }
+    .gallery-item:nth-child(6), .gallery-item:nth-child(7) { grid-column: span 2; }
+    .gallery-item:nth-child(6) .ratio, .gallery-item:nth-child(7) .ratio { --bs-aspect-ratio: 50%; }
+  }
+  .gallery button { all: unset; display: block; width: 100%; cursor: zoom-in; }
+  .gallery .frame { border: 5px solid var(--msc); background: #000; transition: transform .15s ease, box-shadow .15s ease; }
+  .gallery .frame img { object-fit: cover; width: 100%; height: 100%; }
+  .gallery button:hover .frame, .gallery button:focus-visible .frame { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 #000; }
+  .lightbox .modal-content { background: transparent; border: 0; gap: .6rem; }
+  .lb-top { display: flex; align-items: center; justify-content: space-between; color: var(--msc); font-weight: 800; }
+  .lb-count { font-variant-numeric: tabular-nums; background: #000; border: 2px solid var(--msc); border-radius: 999px; padding: .15rem .7rem; font-size: .95rem; }
+  .lb-stage { position: relative; display: grid; place-items: center; touch-action: pan-y; }
+  .lb-stage img { display: block; max-width: 100%; max-height: 78vh; width: auto; height: auto; border: 5px solid var(--msc); background: #000; user-select: none; -webkit-user-drag: none; }
+  .lb-nav {
+    position: absolute; top: 50%; translate: 0 -50%; width: 52px; height: 52px; display: grid; place-items: center;
+    background: var(--msc); color: #000; border: 3px solid #000; border-radius: 50%; box-shadow: 4px 4px 0 #000;
+    font-size: 1.6rem; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .lb-nav:hover, .lb-nav:focus-visible { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+  .lb-prev { left: -26px; } .lb-next { right: -26px; }
+  .lb-prev .ico { transform: rotate(180deg); }
+  @media (max-width: 991.98px) { .lb-prev { left: 10px; } .lb-next { right: 10px; } .lb-nav { width: 44px; height: 44px; font-size: 1.3rem; } }
+  .lb-caption { margin: 0; text-align: center; font-weight: 600; color: #fff; text-shadow: 0 1px 2px #000; }
+  .modal-backdrop.show { opacity: .85; }
+
+  /* back-to-top button */
+  .to-top {
+    position: fixed; z-index: 1030; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%;
+    background: var(--msc); color: #000; border: 3px solid #000; box-shadow: 4px 4px 0 #000; font-size: 1.5rem; text-decoration: none;
+    opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity .2s ease, transform .2s ease, visibility .2s, box-shadow .15s ease;
+  }
+  .to-top.show { opacity: 1; visibility: visible; transform: none; }
+  .to-top:hover, .to-top:focus-visible { color: #000; box-shadow: 6px 6px 0 #000; transform: translate(-2px, -2px); }
+  .to-top .ico { transform: rotate(180deg); }
+  @media (prefers-reduced-motion: reduce) { .to-top, .lb-nav { transition: none; } }
+  footer .disclaimer { font-size: .85rem; opacity: .8; margin-top: .25rem; }
+  @media (max-width: 991.98px) { footer { padding-bottom: 5.5rem !important; } }  /* keep the footer text clear of the back-to-top button */
+
+  /* ---------- video ---------- */
+  .video-frame { border: 3px solid #000; border-radius: 1.25rem; overflow: hidden; box-shadow: 6px 6px 0 rgba(0,0,0,.35); background: #000; }
+  .yt-facade { display: block; background: #000; text-decoration: none; cursor: pointer; }
+  .yt-thumb { width: 100%; height: 100%; object-fit: cover; filter: brightness(.95); transition: filter .25s ease, transform .4s ease; }
+  /* dark fade along the bottom so the title stays readable on any thumbnail */
+  .yt-facade::after { content: ""; position: absolute; inset: 40% 0 0 0; background: linear-gradient(transparent, rgba(0, 0, 0, .9)); pointer-events: none; }
+  .yt-play {
+    position: absolute; inset: auto 0 0 0; z-index: 1; display: flex; align-items: center;
+    gap: clamp(.7rem, 1.6vw, 1rem); padding: 0 1rem clamp(.9rem, 2.4vw, 1.5rem) clamp(1rem, 3vw, 1.8rem);
+  }
+  .yt-play-btn {
+    width: clamp(48px, 7vw, 76px); flex-shrink: 0; aspect-ratio: 1; display: grid; place-items: center;
+    background: var(--msc); border: 3px solid #000; border-radius: 50%; box-shadow: 5px 5px 0 #000;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .yt-play-btn svg { width: 46%; height: 46%; margin-left: 8%; fill: #000; }
+  .yt-play-label { font-weight: 800; font-size: clamp(1.15rem, 2.6vw, 2rem); color: #fff; line-height: 1.15; }
+  .yt-play-sub { color: var(--msc); }
+  @media (max-width: 575.98px) { .yt-play-sub { display: none; } }
+  .yt-facade:hover .yt-thumb, .yt-facade:focus-visible .yt-thumb { filter: brightness(1.05); transform: scale(1.02); }
+  .yt-facade:hover .yt-play-btn, .yt-facade:focus-visible .yt-play-btn { transform: translate(-3px, -3px); box-shadow: 8px 8px 0 #000; }
+  .yt-facade:focus-visible { outline: 3px solid var(--msc); outline-offset: -6px; }
+  .video-frame iframe { border: 0; }
+  @media (prefers-reduced-motion: reduce) { .yt-thumb, .yt-play-btn { transition: none; } .yt-facade:hover .yt-thumb { transform: none; } }
+
+  /* ---------- news ---------- */
+  .news-list { list-style: none; padding: 0; margin: 0; }
+  .news-list li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 1rem; padding: .8rem 0; border-bottom: 1px dashed rgba(255,238,0,.35); }
+  .news-list li:last-child { border-bottom: 0; }
+  .news-list time { color: var(--msc); font-weight: 800; font-variant-numeric: tabular-nums; }
+  .news-list li > * { min-width: 0; }
+  .news-list p { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+  @media (max-width: 575.98px) { .news-list li { grid-template-columns: 1fr; gap: .15rem; } }
+
+  /* ---------- follow ---------- */
+  .socials { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.25rem; }
+  .socials a {
+    width: 84px; height: 84px; display: grid; place-items: center; border-radius: 50%;
+    background: var(--msc); color: #000; font-size: 2.4rem; border: 3px solid #000;
+    box-shadow: 4px 4px 0 #000; transition: transform .15s ease, box-shadow .15s ease; text-decoration: none;
+  }
+  .socials a:hover, .socials a:focus-visible { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #000; color: #000; }
+  .contact-mail {
+    display: inline-flex; align-items: center; gap: .55rem; margin-top: 1.75rem; padding: .55rem 1.2rem;
+    background: #000; color: var(--msc); border: 3px solid var(--msc); border-radius: 999px; box-shadow: 4px 4px 0 rgba(0,0,0,.45);
+    font-weight: 700; font-size: 1.15rem; text-decoration: none; overflow-wrap: anywhere; transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .contact-mail .ico { font-size: 1.3rem; }
+  @media (max-width: 575.98px) { .socials { gap: 1rem; } .socials a { width: 68px; height: 68px; font-size: 2rem; } }
+  .contact-mail:hover, .contact-mail:focus-visible { color: #fff; transform: translate(-2px,-2px); box-shadow: 6px 6px 0 rgba(0,0,0,.5); }
+  footer { background: var(--header); border-top: 3px solid #000; color: rgba(255,255,255,.75); font-size: .95rem; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16l4-4-4-4M8 12h8"/></symbol>
+  <symbol id="i-flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.3 6.4L3 16M3 21v-5h5"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 6.5l9 6.5 9-6.5"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l4 4 4-4M12 8v8"/></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M9 7a3 3 0 016 0M3 13h4M17 13h4M4 7l3 2M20 7l-3 2M4 19l3-2M20 19l-3-2M12 11v9"/></symbol>
+  <symbol id="i-pc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-steam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="16" cy="8" r="3.5"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="8" cy="16" r="3"/><path d="M10.6 14.3l3-3.4M2 13.5l3.6 1.6"/></symbol>
+  <symbol id="i-youtube" viewBox="0 0 24 24"><rect x="1.5" y="4.5" width="21" height="15" rx="4.5" fill="currentColor"/><path d="M10 8.8v6.4l5.6-3.2z" fill="var(--msc, #ffee00)"/></symbol>
+  <symbol id="i-facebook" viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 22v-8.2h2.8l.4-3.3h-3.2V8.4c0-.95.27-1.6 1.63-1.6h1.72V3.86A23 23 0 0014.35 3.7c-2.47 0-4.15 1.5-4.15 4.27v2.53H7.4v3.3h2.8V22z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></symbol>
+</svg>
+
+<!-- ============ HEADER ============ -->
+<nav class="navbar navbar-expand-lg site-nav sticky-top" aria-label="Main">
+  <div class="container-xl">
+    <a class="navbar-brand" href="#top">
+      <img src="assets/logo.png" alt="My Summer Car" width="114" height="78">
+      <span class="d-none d-sm-inline">Welcome to <strong>My Summer Car</strong></span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#multimedia">Multimedia</a></li>
+        <li class="nav-item"><a class="nav-link" href="#news">News</a></li>
+        <li class="nav-item"><a class="nav-link" href="#follow">Follow</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="about">
+    <div class="container-xl">
+      <div class="row g-4 align-items-stretch">
+        <div class="col-lg-7">
+          <h1 class="section-title">About the game</h1>
+          <div class="panel panel-red">
+            <p>
+              MY SUMMER CAR is a game about car building and everlasting Finnish summer.
+              Summer is <img class="hot" src="assets/hot.gif" alt="HOT!"> and this game is <img class="hot" src="assets/hot.gif" alt="HOT!">!
+            </p>
+            <p>
+              Never before is a car game designed with such emphasis on realism, in bad and in a good way.
+              Small error and you die. It could be that you forgot to tighten brake linings, or that you forgot to bolt wheels properly.
+              <img class="rooster" src="assets/rooster.gif" alt="">
+            </p>
+            <p>
+              The maximum speed for the car might be only 165kmh (downhill), but it is all horror already at 80kmh.
+              <span class="y">Of course, you can always order some <img class="hot" src="assets/hot.gif" alt="HOT!"> stuff from other side of the world, and tune up the engine so that you hit 200kmh.</span>
+            </p>
+            <div class="row g-3 align-items-center my-2">
+                <div class="col-12">
+                    <a class="have-fun" href="#features">So have fun with… <svg class="ico" aria-hidden="true"><use href="#i-down" /></svg></a>
+                </div>
+                <div class="col-sm-5">
+                    <div class="permadeath-wrap"><img class="permadeath" src="assets/permadeath.png" alt="Permadeath feature: one wrong move and it's over" width="561" height="342"><img class="skull" src="assets/skull.gif" alt="" width="115" height="86"></div>
+                </div>
+                <div class="col-sm-7">
+                    <blockquote class="dev-quote mb-0">
+                        “I am making this game because this game needs to be made. This is not made because this is fun game, but because it is NOT!”
+                        <img src="assets/under-construction.gif" alt="Under construction" width="284" height="25">
+                    </blockquote>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5 d-flex flex-column justify-content-center">
+          <img class="hero-car mb-4" src="assets/satsuma.jpg" alt="The Satsuma, the car you build in My Summer Car" width="448" height="252">
+          <div class="row g-3 sticker-row align-items-center">
+            <div class="col-4"><img src="assets/firefly-car.png" alt="Orange Satsuma GT"></div>
+            <div class="col-4"><img class="boxed" src="assets/smiley.gif" alt="Smiley wearing a bandana"></div>
+            <div class="col-4"><img class="boxed" src="assets/burning.gif" alt="A burning car engine with the word PERKELE!"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section id="features">
+    <div class="container-xl">
+      <h2 class="section-title">Features</h2>
+      <div class="panel panel-red">
+        <div class="row row-cols-2 row-cols-lg-4 g-2 g-sm-3">
+          <div class="col">
+            <button type="button" class="flip" aria-pressed="false">
+              <span class="flip-inner">
+                <span class="flip-face feature-card"><span class="ratio ratio-16x9"><img src="assets/feat-driving.jpg" alt=""></span><span class="body"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>Detailed driving simulation with Pacejka tire model</span></span>
+                <span class="flip-face flip-back feature-card" aria-hidden="true">
+                  <span class="flip-title">Detailed driving simulation with Pacejka tire model</span>
+                  <span class="flip-text">Tyre grip is worked out with the Pacejka tyre model, the kind used in serious racing sims. The car slides, bites and spins like a real one, and a badly built car drives like one.</span>
+                  <span class="flip-hint"><svg class="ico" aria-hidden="true"><use href="#i-flip"/></svg>Flip back</span>
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="col">
+            <button type="button" class="flip" aria-pressed="false">
+              <span class="flip-inner">
+                <span class="flip-face feature-card"><span class="ratio ratio-16x9"><img src="assets/feat-building.jpg" alt=""></span><span class="body"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>Super difficult hardcore car building puzzle</span></span>
+                <span class="flip-face flip-back feature-card" aria-hidden="true">
+                  <span class="flip-title">Super difficult hardcore car building puzzle</span>
+                  <span class="flip-text">You start with a bare body shell and a garage full of loose parts. Every bolt goes in by hand, and the game won't tell you which one you forgot.</span>
+                  <span class="flip-hint"><svg class="ico" aria-hidden="true"><use href="#i-flip"/></svg>Flip back</span>
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="col">
+            <button type="button" class="flip" aria-pressed="false">
+              <span class="flip-inner">
+                <span class="flip-face feature-card"><span class="ratio ratio-16x9"><img src="assets/feat-highway.jpg" alt=""></span><span class="body"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>Dead boring highway</span></span>
+                <span class="flip-face flip-back feature-card" aria-hidden="true">
+                  <span class="flip-title">Dead boring highway</span>
+                  <span class="flip-text">Long, quiet roads through the Finnish countryside with very little happening. That's the point: it feels like a real summer drive.</span>
+                  <span class="flip-hint"><svg class="ico" aria-hidden="true"><use href="#i-flip"/></svg>Flip back</span>
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="col">
+            <button type="button" class="flip" aria-pressed="false">
+              <span class="flip-inner">
+                <span class="flip-face feature-card"><span class="ratio ratio-16x9"><img src="assets/feat-npc.jpg" alt=""></span><span class="body"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>Drunk NPCs</span></span>
+                <span class="flip-face flip-back feature-card" aria-hidden="true">
+                  <span class="flip-title">Drunk NPCs</span>
+                  <span class="flip-text">Plenty of the locals have had a few too many, and you can tell from how they talk and how they behave. Keep your distance on the road.</span>
+                  <span class="flip-hint"><svg class="ico" aria-hidden="true"><use href="#i-flip"/></svg>Flip back</span>
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="col">
+            <button type="button" class="flip" aria-pressed="false">
+              <span class="flip-inner">
+                <span class="flip-face feature-card"><span class="ratio ratio-16x9"><img src="assets/feat-sauna.jpg" alt=""></span><span class="body"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>Able to go to sauna, drink alcohol beverages and get wasted</span></span>
+                <span class="flip-face flip-back feature-card" aria-hidden="true">
+                  <span class="flip-title">Able to go to sauna, drink alcohol beverages and get wasted</span>
+                  <span class="flip-text">Heat the sauna, throw water on the stones, then cool off with a drink. Have too many and the screen starts to sway, so driving becomes a very bad idea.</span>
+                  <span class="flip-hint"><svg class="ico" aria-hidden="true"><use href="#i-flip"/></svg>Flip back</span>
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="col">
+            <button type="button" class="flip" aria-pressed="false">
+              <span class="flip-inner">
+                <span class="flip-face feature-card"><span class="ratio ratio-16x9"><img src="assets/feat-radio.jpg" alt=""></span><span class="body"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>Ability to import own OGG songs to radio</span></span>
+                <span class="flip-face flip-back feature-card" aria-hidden="true">
+                  <span class="flip-title">Ability to import own OGG songs to radio</span>
+                  <span class="flip-text">Put your own music files in OGG format into the game's radio folder and they play on the in-game radio, so you can drive to your own playlist.</span>
+                  <span class="flip-hint"><svg class="ico" aria-hidden="true"><use href="#i-flip"/></svg>Flip back</span>
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="col">
+            <button type="button" class="flip" aria-pressed="false">
+              <span class="flip-inner">
+                <span class="flip-face feature-card"><span class="ratio ratio-16x9"><img src="assets/feat-wood.jpg" alt=""></span><span class="body"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>Ability to chop wood for money</span></span>
+                <span class="flip-face flip-back feature-card" aria-hidden="true">
+                  <span class="flip-title">Ability to chop wood for money</span>
+                  <span class="flip-text">Split logs into firewood and sell it when you need cash. Slow, honest work for when the car has eaten all your money.</span>
+                  <span class="flip-hint"><svg class="ico" aria-hidden="true"><use href="#i-flip"/></svg>Flip back</span>
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="col d-flex flex-column justify-content-center">
+            <p class="fw-bold mb-2 y">Also included:</p>
+            <div class="feature-extra">
+              <span><svg class="ico" aria-hidden="true"><use href="#i-bug"/></svg>Physics bugs</span>
+              <span><svg class="ico" aria-hidden="true"><use href="#i-pc"/></svg>PC-only game</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MULTIMEDIA: IMAGES + VIDEO ============ -->
+  <section id="multimedia">
+    <div class="container-xl">
+      <h2 class="section-title">Images</h2>
+      <div class="panel panel-red">
+        <div class="gallery">
+          <div class="gallery-item"><button type="button" data-full="assets/gallery-1.jpg" aria-label="Open screenshot 1"><div class="frame ratio ratio-4x3"><img src="assets/gallery-1.jpg" alt="Black sports car outside a garage" loading="lazy"></div></button></div>
+          <div class="gallery-item"><button type="button" data-full="assets/gallery-2.jpg" aria-label="Open screenshot 2"><div class="frame ratio ratio-4x3"><img src="assets/gallery-2.jpg" alt="Engine bay of a red car" loading="lazy"></div></button></div>
+          <div class="gallery-item"><button type="button" data-full="assets/gallery-3.jpg" aria-label="Open screenshot 3"><div class="frame ratio ratio-4x3"><img src="assets/gallery-3.jpg" alt="Garage shelves full of parts" loading="lazy"></div></button></div>
+          <div class="gallery-item"><button type="button" data-full="assets/gallery-4.jpg" aria-label="Open screenshot 4"><div class="frame ratio ratio-4x3"><img src="assets/gallery-4.jpg" alt="Flame-painted car at the shop" loading="lazy"></div></button></div>
+          <div class="gallery-item"><button type="button" data-full="assets/gallery-5.jpg" aria-label="Open screenshot 5"><div class="frame ratio ratio-4x3"><img src="assets/gallery-5.jpg" alt="Shirtless man in a doorway" loading="lazy"></div></button></div>
+          <div class="gallery-item"><button type="button" data-full="assets/gallery-6.jpg" aria-label="Open screenshot 6"><div class="frame ratio ratio-4x3"><img src="assets/gallery-6.jpg" alt="Supercharged engine in a brown car" loading="lazy"></div></button></div>
+          <div class="gallery-item"><button type="button" data-full="assets/gallery-7.jpg" aria-label="Open screenshot 7"><div class="frame ratio ratio-4x3"><img src="assets/gallery-7.jpg" alt="Red sports car by an old house" loading="lazy"></div></button></div>
+        </div>
+      </div>
+
+      <h2 class="section-title mt-5">Trailer</h2>
+      <div class="video-frame ratio ratio-16x9">
+        <!-- Click-to-play: only the thumbnail loads with the page; YouTube's player loads on click.
+             Without JavaScript this is a plain link to the video on YouTube. -->
+        <a class="yt-facade" href="https://www.youtube.com/watch?v=ulXkgdijz1c" data-video-id="ulXkgdijz1c"
+           data-title="My Summer Car trailer on YouTube" target="_blank" rel="noopener">
+          <img class="yt-thumb" src="https://i.ytimg.com/vi/ulXkgdijz1c/maxresdefault.jpg" alt="" loading="lazy" decoding="async">
+          <span class="yt-play">
+            <span class="yt-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+            <span class="yt-play-label">Play trailer <span class="yt-play-sub">· My Summer Car</span></span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NEWS ============ -->
+  <section id="news">
+    <div class="container-xl" style="max-width: 960px">
+      <h2 class="section-title yellow">News</h2>
+      <div class="panel panel-dark">
+        <ol class="news-list">
+          <li><time datetime="2024-12-31">31.12.2024</time><p>Game is gearing out of Steam Early Access!</p></li>
+          <li><time datetime="2016-08-19">19.8.2016</time><p>Changelog is back online</p></li>
+          <li><time datetime="2016-08-09">9.8.2016</time><p>It took us 6 days to pass Steam Greenlight, a huge thanks to you all!</p></li>
+          <li><time datetime="2016-08-02">2.8.2016</time><p>Game has been submitted to Steam Greenlight!</p></li>
+          <li><time datetime="2016-01-18">18.1.2016</time><p>Game site moved to another domain</p></li>
+          <li><time datetime="2015-03-29">29.3.2015</time><p>Updated changelog, updated screenshots and video</p></li>
+          <li><time datetime="2015-03-03">3.3.2015</time><p>Added full development changelog for those who are interested, also links to Twitch and Steam group</p></li>
+          <li><time datetime="2015-02-12">12.2.2015</time><p>Official Steam group here: <a href="https://steamcommunity.com/groups/mysummercar" target="_blank" rel="noopener">steamcommunity.com/groups/mysummercar</a></p></li>
+          <li><time datetime="2014-11-24">24.11.2014</time><p>BUILD number 154 has released for testers. And we are ONLINE in the Interweb!</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOLLOW ============ -->
+  <section id="follow" class="text-center pb-5">
+    <div class="container-xl">
+      <h2 class="section-title yellow">Follow us</h2>
+      <p class="mb-4 fw-semibold">There is a modern thing called SOCIAL MULTIMEDIA, so My Summer Car went there as well!</p>
+      <div class="socials">
+        <a href="https://store.steampowered.com/app/516750/My_Summer_Car/" target="_blank" rel="noopener" aria-label="My Summer Car on Steam"><svg class="ico" aria-hidden="true"><use href="#i-steam"/></svg></a>
+        <a href="https://www.youtube.com/@Petrooli" target="_blank" rel="noopener" aria-label="YouTube"><svg class="ico" aria-hidden="true"><use href="#i-youtube"/></svg></a>
+        <a href="https://www.facebook.com/mysummercar" target="_blank" rel="noopener" aria-label="Facebook"><svg class="ico" aria-hidden="true"><use href="#i-facebook"/></svg></a>
+        <a href="https://x.com/mysummercargame" target="_blank" rel="noopener" aria-label="X"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></a>
+      </div>
+      <a class="contact-mail" href="mailto:info@amistech.com"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>info@amistech.com</a>
+    </div>
+  </section>
+</main>
+
+<footer class="py-3 text-center">
+  <div class="container-xl">My Summer Car fan site recreation · built by Sebastian Ritkav & Tomáš Vretenár
+    <div class="disclaimer">Fan site. Not affiliated with or endorsed by Amistech Games. My Summer Car, its logo and screenshots belong to their owners.</div>
+  </div>
+</footer>
+
+<a href="#top" class="to-top" aria-label="Back to top"><svg class="ico" aria-hidden="true"><use href="#i-down"/></svg></a>
+
+<!-- Lightbox -->
+<div class="modal fade lightbox" id="lightbox" tabindex="-1" aria-label="Screenshot viewer" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="lb-top">
+        <span class="lb-count" aria-live="polite">1 / 7</span>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="lb-stage">
+        <img src="" alt="">
+        <button type="button" class="lb-nav lb-prev" aria-label="Previous screenshot"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <button type="button" class="lb-nav lb-next" aria-label="Next screenshot"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </div>
+      <p class="lb-caption"></p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  /* yt-facade */
+  // Trailer: load YouTube's player only when someone clicks play
+  document.querySelectorAll('.yt-facade').forEach(link => {
+    const thumb = link.querySelector('.yt-thumb');
+    // Not every video has a max-resolution thumbnail; YouTube returns a tiny 120px placeholder then
+    thumb.addEventListener('load', () => {
+      if (thumb.naturalWidth <= 120) thumb.src = `https://i.ytimg.com/vi/${link.dataset.videoId}/hqdefault.jpg`;
+    }, { once: true });
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${link.dataset.videoId}?autoplay=1&rel=0`;
+      iframe.title = link.dataset.title;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.allowFullscreen = true;
+      link.replaceWith(iframe);
+      iframe.focus();
+    });
+  });
+  /* /yt-facade */
+
+  // Feature cards: click (or Enter/Space) to flip and show more info
+  document.querySelectorAll('.flip').forEach(card => {
+    const back = card.querySelector('.flip-back');
+    card.addEventListener('click', () => {
+      const flipped = card.getAttribute('aria-pressed') !== 'true';
+      card.setAttribute('aria-pressed', String(flipped));
+      back.setAttribute('aria-hidden', String(!flipped));
+    });
+  });
+
+  // Gallery lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = lb.querySelector('.lb-stage img');
+  const lbCount = lb.querySelector('.lb-count');
+  const lbCaption = lb.querySelector('.lb-caption');
+  const modal = window.bootstrap ? new bootstrap.Modal(lb) : null;
+  const shots = [...document.querySelectorAll('.gallery button')].map(btn => ({ src: btn.dataset.full, alt: btn.querySelector('img').alt }));
+  let current = 0;
+
+  function showShot(i) {
+    current = (i + shots.length) % shots.length;      // wraps around at both ends
+    lbImg.src = shots[current].src;
+    lbImg.alt = shots[current].alt;
+    lbCaption.textContent = shots[current].alt;
+    lbCount.textContent = `${current + 1} / ${shots.length}`;
+    [current - 1, current + 1].forEach(n => { new Image().src = shots[(n + shots.length) % shots.length].src; }); // preload neighbours
+  }
+  document.querySelectorAll('.gallery button').forEach((btn, i) => {
+    btn.addEventListener('click', () => { showShot(i); modal && modal.show(); });
+  });
+  lb.querySelector('.lb-prev').addEventListener('click', () => showShot(current - 1));
+  lb.querySelector('.lb-next').addEventListener('click', () => showShot(current + 1));
+  // arrow keys while the viewer is open
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('show')) return;
+    if (e.key === 'ArrowLeft') showShot(current - 1);
+    if (e.key === 'ArrowRight') showShot(current + 1);
+  });
+  // swipe on touch screens
+  let touchX = null;
+  const stage = lb.querySelector('.lb-stage');
+  stage.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX; touchX = null;
+    if (Math.abs(dx) > 50) showShot(current + (dx < 0 ? 1 : -1));
+  });
+
+  // Back-to-top button: appears once you've scrolled down a bit
+  const toTop = document.querySelector('.to-top');
+  const onScroll = () => toTop.classList.toggle('show', window.scrollY > 700);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // Highlight the nav link for the section in view, and close the mobile menu after a tap
+  const links = [...document.querySelectorAll('#mainNav .nav-link')];
+  const byId = Object.fromEntries(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && byId[e.target.id]) {
+        links.forEach(a => a.classList.remove('active'));
+        byId[e.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  Object.keys(byId).forEach(id => { const s = document.getElementById(id); s && io.observe(s); });
+  const collapseEl = document.getElementById('mainNav');
+  links.forEach(a => a.addEventListener('click', () => {
+    if (collapseEl.classList.contains('show') && window.bootstrap) bootstrap.Collapse.getOrCreateInstance(collapseEl).hide();
+  }));
+</script>
+</body>
+</html>
